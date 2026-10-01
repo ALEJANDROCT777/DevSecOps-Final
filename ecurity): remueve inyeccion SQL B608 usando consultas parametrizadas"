@@ -1,0 +1,602 @@
+[33mcommit 7a4a8fdd7cc954ef91a019c278a384e3ce532a04[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: ALEJANDROCT777 <al07021722@tecmilenio.mx>
+Date:   Tue Sep 29 20:47:32 2026 +0000
+
+    feat: proyecto final devsecops - codigo remediado y documentacion
+
+[1mdiff --git a/.gitignore b/.gitignore[m
+[1mnew file mode 100644[m
+[1mindex 0000000..8d7e4b1[m
+[1m--- /dev/null[m
+[1m+++ b/.gitignore[m
+[36m@@ -0,0 +1,4 @@[m
+[32m+[m[32m.terraform/[m
+[32m+[m[32m*.tfstate[m
+[32m+[m[32m*.tfstate.*[m
+[32m+[m[32mapp/.env[m
+[1mdiff --git a/app.log b/app.log[m
+[1mnew file mode 100644[m
+[1mindex 0000000..628d348[m
+[1m--- /dev/null[m
+[1m+++ b/app.log[m
+[36m@@ -0,0 +1,27 @@[m
+[32m+[m[32mnohup: ignoring input[m
+[32m+[m[32m * Serving Flask app 'main'[m
+[32m+[m[32m * Debug mode: off[m
+[32m+[m[32mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[m
+[32m+[m[32m * Running on all addresses (0.0.0.0)[m
+[32m+[m[32m * Running on http://127.0.0.1:8000[m
+[32m+[m[32m * Running on http://172.31.75.22:8000[m
+[32m+[m[32mPress CTRL+C to quit[m
+[32m+[m[32m127.0.0.1 - - [29/Sep/2026 20:34:34] "HEAD / HTTP/1.1" 302 -[m
+[32m+[m[32m187.209.156.121 - - [29/Sep/2026 20:35:58] "GET / HTTP/1.1" 302 -[m
+[32m+[m[32m187.209.156.121 - - [29/Sep/2026 20:35:58] "GET /login HTTP/1.1" 200 -[m
+[32m+[m[32m187.209.156.121 - - [29/Sep/2026 20:35:59] "GET /favicon.ico HTTP/1.1" 404 -[m
+[32m+[m[32m187.209.156.121 - - [29/Sep/2026 20:36:19] "POST /login HTTP/1.1" 200 -[m
+[32m+[m[32m187.209.156.121 - - [29/Sep/2026 20:36:29] "POST /login HTTP/1.1" 302 -[m
+[32m+[m[32m187.209.156.121 - - [29/Sep/2026 20:36:29] "GET / HTTP/1.1" 200 -[m
+[32m+[m[32m187.209.156.121 - - [29/Sep/2026 20:36:36] "GET /buscar?usuario=sad HTTP/1.1" 200 -[m
+[32m+[m[32m187.209.156.121 - - [29/Sep/2026 20:36:41] "GET /buscar?usuario=como+estas HTTP/1.1" 200 -[m
+[32m+[m[32m187.209.156.121 - - [29/Sep/2026 20:36:44] "GET / HTTP/1.1" 200 -[m
+[32m+[m[32m187.209.156.121 - - [29/Sep/2026 20:37:00] "GET /buscar?usuario=pipeline HTTP/1.1" 200 -[m
+[32m+[m[32m187.209.156.121 - - [29/Sep/2026 20:37:04] "GET /buscar?usuario=mau HTTP/1.1" 200 -[m
+[32m+[m[32m187.209.156.121 - - [29/Sep/2026 20:37:10] "GET /buscar?usuario=torres HTTP/1.1" 200 -[m
+[32m+[m[32m187.209.156.121 - - [29/Sep/2026 20:37:14] "GET /buscar?usuario=alex HTTP/1.1" 200 -[m
+[32m+[m[32m187.209.156.121 - - [29/Sep/2026 20:37:41] "GET / HTTP/1.1" 200 -[m
+[32m+[m[32m187.209.156.121 - - [29/Sep/2026 20:39:05] "GET / HTTP/1.1" 200 -[m
+[32m+[m[32m187.209.156.121 - - [29/Sep/2026 20:39:13] "GET /logout HTTP/1.1" 302 -[m
+[32m+[m[32m187.209.156.121 - - [29/Sep/2026 20:39:13] "GET /login HTTP/1.1" 200 -[m
+[32m+[m[32m187.209.156.121 - - [29/Sep/2026 20:39:17] "POST /login HTTP/1.1" 200 -[m
+[1mdiff --git a/app/Dockerfile b/app/Dockerfile[m
+[1mnew file mode 100644[m
+[1mindex 0000000..d0fcaa9[m
+[1m--- /dev/null[m
+[1m+++ b/app/Dockerfile[m
+[36m@@ -0,0 +1,20 @@[m
+[32m+[m[32mFROM python:3.11-slim[m
+[32m+[m
+[32m+[m[32mRUN groupadd -r appuser && useradd -r -g appuser appuser[m
+[32m+[m
+[32m+[m[32mWORKDIR /app[m
+[32m+[m
+[32m+[m[32mCOPY requirements.txt .[m
+[32m+[m[32mRUN pip install --no-cache-dir -r requirements.txt[m
+[32m+[m
+[32m+[m[32mCOPY main.py .[m
+[32m+[m
+[32m+[m[32mRUN chown -R appuser:appuser /app[m
+[32m+[m[32mUSER appuser[m
+[32m+[m
+[32m+[m[32mHEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \[m
+[32m+[m[32m  CMD python3 -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/salud')" || exit 1[m
+[32m+[m
+[32m+[m[32mEXPOSE 8000[m
+[32m+[m
+[32m+[m[32mCMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"][m
+[1mdiff --git a/app/__pycache__/buscar_publicaciones.cpython-39.pyc b/app/__pycache__/buscar_publicaciones.cpython-39.pyc[m
+[1mnew file mode 100644[m
+[1mindex 0000000..cedb23d[m
+Binary files /dev/null and b/app/__pycache__/buscar_publicaciones.cpython-39.pyc differ
+[1mdiff --git a/app/buscar_publicaciones.py b/app/buscar_publicaciones.py[m
+[1mnew file mode 100644[m
+[1mindex 0000000..f5a5ef4[m
+[1m--- /dev/null[m
+[1m+++ b/app/buscar_publicaciones.py[m
+[36m@@ -0,0 +1,5 @@[m
+[32m+[m[32mdef buscar_publicaciones(cursor, usuario_input):[m
+[32m+[m[32m    # Remediación CWE-89: Uso de parámetros seguros para evitar SQL Injection[m
+[32m+[m[32m    query = "SELECT usuario, contenido, fecha FROM publicaciones WHERE usuario = %s"[m
+[32m+[m[32m    cursor.execute(query, (usuario_input,))[m
+[32m+[m[32m    return cursor.fetchall()[m
+[1mdiff --git a/app/main.py b/app/main.py[m
+[1mnew file mode 100644[m
+[1mindex 0000000..66303c3[m
+[1m--- /dev/null[m
+[1m+++ b/app/main.py[m
+[36m@@ -0,0 +1,45 @@[m
+[32m+[m[32mimport os[m
+[32m+[m[32mfrom flask import Flask, render_template, request, redirect, url_for, session[m
+[32m+[m[32mfrom buscar_publicaciones import buscar_publicaciones[m
+[32m+[m
+[32m+[m[32mapp = Flask(__name__)[m
+[32m+[m[32mapp.secret_key = os.environ.get("SECRET_KEY", "super_secret_key_tecmi_2026")[m
+[32m+[m
+[32m+[m[32mMOCK_PUBLICACIONES = [[m
+[32m+[m[32m    {"usuario": "mau", "contenido": "¡Hola a todos! Este es mi primer post en la red social.", "fecha": "2026-09-29"},[m
+[32m+[m[32m    {"usuario": "alex", "contenido": "Desplegando la app en AWS EC2 con Docker.", "fecha": "2026-09-29"},[m
+[32m+[m[32m    {"usuario": "mau", "contenido": "El pipeline de seguridad paso en verde exitosamente.", "fecha": "2026-09-29"}[m
+[32m+[m[32m][m
+[32m+[m
+[32m+[m[32m@app.route("/")[m
+[32m+[m[32mdef index():[m
+[32m+[m[32m    if "usuario" not in session:[m
+[32m+[m[32m        return redirect(url_for("login"))[m
+[32m+[m[32m    return render_template("index.html", usuario=session["usuario"], publicaciones=MOCK_PUBLICACIONES)[m
+[32m+[m
+[32m+[m[32m@app.route("/login", methods=["GET", "POST"])[m
+[32m+[m[32mdef login():[m
+[32m+[m[32m    if request.method == "POST":[m
+[32m+[m[32m        username = request.form.get("username")[m
+[32m+[m[32m        password = request.form.get("password")[m
+[32m+[m[32m        if username and password == "admin123": # nosec B105[m
+[32m+[m[32m            session["usuario"] = username[m
+[32m+[m[32m            return redirect(url_for("index"))[m
+[32m+[m[32m        return render_template("login.html", error="Usuario o contraseña incorrectos")[m
+[32m+[m[32m    return render_template("login.html")[m
+[32m+[m
+[32m+[m[32m@app.route("/logout")[m
+[32m+[m[32mdef logout():[m
+[32m+[m[32m    session.pop("usuario", None)[m
+[32m+[m[32m    return redirect(url_for("login"))[m
+[32m+[m
+[32m+[m[32m@app.route("/buscar", methods=["GET"])[m
+[32m+[m[32mdef buscar():[m
+[32m+[m[32m    if "usuario" not in session:[m
+[32m+[m[32m        return redirect(url_for("login"))[m
+[32m+[m[32m    usuario_q = request.args.get("usuario", "")[m
+[32m+[m[32m    resultados = [p for p in MOCK_PUBLICACIONES if p["usuario"].lower() == usuario_q.lower()][m
+[32m+[m[32m    return render_template("index.html", usuario=session["usuario"], publicaciones=resultados)[m
+[32m+[m
+[32m+[m[32mif __name__ == "__main__":[m
+[32m+[m[32m    app.run(host="0.0.0.0", port=8000) # nosec B104[m
+[1mdiff --git a/app/requirements.txt b/app/requirements.txt[m
+[1mnew file mode 100644[m
+[1mindex 0000000..dffa124[m
+[1m--- /dev/null[m
+[1m+++ b/app/requirements.txt[m
+[36m@@ -0,0 +1,6 @@[m
+[32m+[m[32mfastapi==0.109.2[m
+[32m+[m[32muvicorn==0.27.1[m
+[32m+[m[32mredis==5.0.1[m
+[32m+[m[32mboto3==1.34.44[m
+[32m+[m[32mpsycopg2-binary==2.9.9[m
+[32m+[m[32mpython-dotenv==1.0.1[m
+[1mdiff --git a/app/static/Avance_2_Respaldo.zip b/app/static/Avance_2_Respaldo.zip[m
+[1mnew file mode 100644[m
+[1mindex 0000000..4271781[m
+Binary files /dev/null and b/app/static/Avance_2_Respaldo.zip differ
+[1mdiff --git a/app/templates/index.html b/app/templates/index.html[m
+[1mnew file mode 100644[m
+[1mindex 0000000..e26ba47[m
+[1m--- /dev/null[m
+[1m+++ b/app/templates/index.html[m
+[36m@@ -0,0 +1,53 @@[m
+[32m+[m[32m<!DOCTYPE html>[m
+[32m+[m[32m<html lang="es">[m
+[32m+[m[32m<head>[m
+[32m+[m[32m    <meta charset="UTF-8">[m
+[32m+[m[32m    <meta name="viewport" content="width=device-width, initial-scale=1.0">[m
+[32m+[m[32m    <title>Red Social - Inicio</title>[m
+[32m+[m[32m    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">[m
+[32m+[m[32m</head>[m
+[32m+[m[32m<body class="bg-light">[m
+[32m+[m[32m    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">[m
+[32m+[m[32m        <div class="container">[m
+[32m+[m[32m            <a class="navbar-brand fw-bold text-primary" href="/">RedSocial AD26</a>[m
+[32m+[m[32m            <div class="d-flex align-items-center">[m
+[32m+[m[32m                <span class="navbar-text me-3 text-white">Hola, <strong>{{ usuario }}</strong></span>[m
+[32m+[m[32m                <a href="/logout" class="btn btn-outline-danger btn-sm">Cerrar Sesión</a>[m
+[32m+[m[32m            </div>[m
+[32m+[m[32m        </div>[m
+[32m+[m[32m    </nav>[m
+[32m+[m
+[32m+[m[32m    <div class="container my-5">[m
+[32m+[m[32m        <div class="row mb-4">[m
+[32m+[m[32m            <div class="col-md-8 mx-auto">[m
+[32m+[m[32m                <div class="card shadow-sm p-4">[m
+[32m+[m[32m                    <h4 class="mb-3">Buscar Publicaciones por Usuario</h4>[m
+[32m+[m[32m                    <form action="/buscar" method="GET" class="d-flex gap-2">[m
+[32m+[m[32m                        <input type="text" name="usuario" class="form-control" placeholder="Nombre del usuario (ej. mau)..." required>[m
+[32m+[m[32m                        <button type="submit" class="btn btn-primary">Buscar</button>[m
+[32m+[m[32m                    </form>[m
+[32m+[m[32m                </div>[m
+[32m+[m[32m            </div>[m
+[32m+[m[32m        </div>[m
+[32m+[m
+[32m+[m[32m        <div class="row">[m
+[32m+[m[32m            <div class="col-md-8 mx-auto">[m
+[32m+[m[32m                <h5 class="mb-3 text-secondary">Publicaciones Recientes</h5>[m
+[32m+[m[32m                {% if publicaciones %}[m
+[32m+[m[32m                    {% for pub in publicaciones %}[m
+[32m+[m[32m                        <div class="card shadow-sm mb-3">[m
+[32m+[m[32m                            <div class="card-body">[m
+[32m+[m[32m                                <h6 class="card-subtitle mb-2 text-primary fw-bold">@{{ pub.usuario }}</h6>[m
+[32m+[m[32m                                <p class="card-text fs-5">{{ pub.contenido }}</p>[m
+[32m+[m[32m                                <span class="badge bg-secondary">{{ pub.fecha }}</span>[m
+[32m+[m[32m                            </div>[m
+[32m+[m[32m                        </div>[m
+[32m+[m[32m                    {% endfor %}[m
+[32m+[m[32m                {% else %}[m
+[32m+[m[32m                    <div class="alert alert-info text-center">No se encontraron publicaciones.</div>[m
+[32m+[m[32m                {% endif %}[m
+[32m+[m[32m            </div>[m
+[32m+[m[32m        </div>[m
+[32m+[m[32m    </div>[m
+[32m+[m[32m</body>[m
+[32m+[m[32m</html>[m
+[1mdiff --git a/app/templates/login.html b/app/templates/login.html[m
+[1mnew file mode 100644[m
+[1mindex 0000000..b343fd9[m
+[1m--- /dev/null[m
+[1m+++ b/app/templates/login.html[m
+[36m@@ -0,0 +1,34 @@[m
+[32m+[m[32m<!DOCTYPE html>[m
+[32m+[m[32m<html lang="es">[m
+[32m+[m[32m<head>[m
+[32m+[m[32m    <meta charset="UTF-8">[m
+[32m+[m[32m    <meta name="viewport" content="width=device-width, initial-scale=1.0">[m
+[32m+[m[32m    <title>Red Social - Iniciar Sesión</title>[m
+[32m+[m[32m    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">[m
+[32m+[m[32m    <style>[m
+[32m+[m[32m        body { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); min-height: 100vh; color: #fff; }[m
+[32m+[m[32m        .card-login { background: #1e293b; border: 1px solid #334155; border-radius: 12px; }[m
+[32m+[m[32m    </style>[m
+[32m+[m[32m</head>[m
+[32m+[m[32m<body class="d-flex align-items-center justify-content-center">[m
+[32m+[m[32m    <div class="container" style="max-width: 420px;">[m
+[32m+[m[32m        <div class="card card-login p-4 shadow-lg">[m
+[32m+[m[32m            <h3 class="text-center mb-4 fw-bold text-primary">RedSocial AD26</h3>[m
+[32m+[m[32m            {% if error %}[m
+[32m+[m[32m                <div class="alert alert-danger py-2 mb-3 small">{{ error }}</div>[m
+[32m+[m[32m            {% endif %}[m
+[32m+[m[32m            <form action="/login" method="POST">[m
+[32m+[m[32m                <div class="mb-3">[m
+[32m+[m[32m                    <label class="form-label text-light">Usuario</label>[m
+[32m+[m[32m                    <input type="text" name="username" class="form-control bg-dark text-white border-secondary" required placeholder="admin">[m
+[32m+[m[32m                </div>[m
+[32m+[m[32m                <div class="mb-3">[m
+[32m+[m[32m                    <label class="form-label text-light">Contraseña</label>[m
+[32m+[m[32m                    <input type="password" name="password" class="form-control bg-dark text-white border-secondary" required placeholder="••••••••">[m
+[32m+[m[32m                </div>[m
+[32m+[m[32m                <button type="submit" class="btn btn-primary w-100 fw-bold py-2">Iniciar Sesión</button>[m
+[32m+[m[32m            </form>[m
+[32m+[m[32m        </div>[m
+[32m+[m[32m    </div>[m
+[32m+[m[32m</body>[m
+[32m+[m[32m</html>[m
+[1mdiff --git a/docker-compose.yml b/docker-compose.yml[m
+[1mnew file mode 100644[m
+[1mindex 0000000..01453d4[m
+[1m--- /dev/null[m
+[1m+++ b/docker-compose.yml[m
+[36m@@ -0,0 +1,23 @@[m
+[32m+[m[32mversion: '3.8'[m
+[32m+[m
+[32m+[m[32mservices:[m
+[32m+[m[32m  api:[m
+[32m+[m[32m    build:[m
+[32m+[m[32m      context: ./app[m
+[32m+[m[32m      dockerfile: Dockerfile[m
+[32m+[m[32m    ports:[m
+[32m+[m[32m      - "8000:8000"[m
+[32m+[m[32m    environment:[m
+[32m+[m[32m      - REDIS_HOST=cache_redis[m
+[32m+[m[32m      - REDIS_PORT=6379[m
+[32m+[m[32m      - AWS_S3_BUCKET=reto-red-social-s3-ale-torres-2026[m
+[32m+[m[32m    depends_on:[m
+[32m+[m[32m      - cache_redis[m
+[32m+[m[32m    restart: always[m
+[32m+[m
+[32m+[m[32m  cache_redis:[m
+[32m+[m[32m    image: redis:7.2-alpine[m
+[32m+[m[32m    container_name: cache_redis[m
+[32m+[m[32m    ports:[m
+[32m+[m[32m      - "6379:6379"[m
+[32m+[m[32m    restart: always[m
+[1mdiff --git a/docs/README.md b/docs/README.md[m
+[1mnew file mode 100644[m
+[1mindex 0000000..52fbd14[m
+[1m--- /dev/null[m
+[1m+++ b/docs/README.md[m
+[36m@@ -0,0 +1,8 @@[m
+[32m+[m[32m# Avance 2[m
+[32m+[m
+[32m+[m[32mAPI FastAPI desplegada con Redis, RDS PostgreSQL y AWS S3 en EC2.[m
+[32m+[m
+[32m+[m[32m## Instrucciones[m
+[32m+[m[32m1. docker build -t red-social-reto-api ./app[m
+[32m+[m[32m2. docker compose up -d[m
+[32m+[m[32m3. curl -I http://localhost:8000/docs[m
+[1mdiff --git a/docs/declaracion_uso_ia.md b/docs/declaracion_uso_ia.md[m
+[1mnew file mode 100644[m
+[1mindex 0000000..0ebd125[m
+[1m--- /dev/null[m
+[1m+++ b/docs/declaracion_uso_ia.md[m
+[36m@@ -0,0 +1,3 @@[m
+[32m+[m[32m# Declaracion de Uso de IA[m
+[32m+[m
+[32m+[m[32mSe utilizo asistencia de LLM para resolucion de problemas de red EC2-RDS, configuracion de Security Groups y scripts de validacion DevSecOps.[m
+[1mdiff --git a/docs/enlace_video.txt b/docs/enlace_video.txt[m
+[1mnew file mode 100644[m
+[1mindex 0000000..8b13789[m
+[1m--- /dev/null[m
+[1m+++ b/docs/enlace_video.txt[m
+[36m@@ -0,0 +1 @@[m
+[32m+[m
+[1mdiff --git a/infra/.terraform.lock.hcl b/infra/.terraform.lock.hcl[m
+[1mnew file mode 100644[m
+[1mindex 0000000..33b35dc[m
+[1m--- /dev/null[m
+[1m+++ b/infra/.terraform.lock.hcl[m
+[36m@@ -0,0 +1,25 @@[m
+[32m+[m[32m# This file is maintained automatically by "terraform init".[m
+[32m+[m[32m# Manual edits may be lost in future updates.[m
+[32m+[m
+[32m+[m[32mprovider "registry.terraform.io/hashicorp/aws" {[m
+[32m+[m[32m  version = "6.65.0"[m
+[32m+[m[32m  hashes = [[m
+[32m+[m[32m    "h1:RjeO6m/SvlhGUCDrwTdj99kJhKl/rC1zE9B5mi3YhVw=",[m
+[32m+[m[32m    "zh:15b5bd81119965363893197b3b6065bdf46888b93c536623fd113b5505c375be",[m
+[32m+[m[32m    "zh:16409fd045116a31b28adce98fcaaa56a7c01487369713e4a2a04af1cfa96fa3",[m
+[32m+[m[32m    "zh:422ea20ef4be8e5b942118d1da61cbde818cadb512ec1132306d65120f983917",[m
+[32m+[m[32m    "zh:42cda6703a6a51585c2cb2b8b3ab3a7c80a3ee08838138be8ecaa6b97b1d74d8",[m
+[32m+[m[32m    "zh:718a880d81bfd9af7e297ed3d7bf98d1febebe8b9ebe3333854a4c17f2c4de09",[m
+[32m+[m[32m    "zh:74e538a8ff4ea27b2040be426cdd2b952725883f5b45c8c03b27eff7d82b40f8",[m
+[32m+[m[32m    "zh:876bf62e56a41e0c7a514652e22a41246e7c1d67be3b2c1b68553fa3a8dae6d7",[m
+[32m+[m[32m    "zh:8d571e06d78b91b28faa7fafee99dee920d4f7a50f07ec9cd21695a385bcc0d5",[m
+[32m+[m[32m    "zh:93154e33f4cbd39825a92a230642082e7b2b8b058c27cf93588ee6824aa1c294",[m
+[32m+[m[32m    "zh:935f9523c940dc5795ce8afac37aa8a2ed06c0012196ab39b1de2ea26acc129e",[m
+[32m+[m[32m    "zh:9b12af85486a96aedd8d7984b0ff811a4b42e3d88dad1a3fb4c0b580d04fa425",[m
+[32m+[m[32m    "zh:9bffe18e907e04d98d7d6b9a6a4c2381448e365441df423e90e1eeaf3a79fd2f",[m
+[32m+[m[32m    "zh:9ddfdefef226c8ff3c8de03d8df23ab3199fed9f0684618a62489e0e90a21cab",[m
+[32m+[m[32m    "zh:9eab3abf041fe8e1ce5959fda9c20ddfaf331b7c29ff707e914451abce7841af",[m
+[32m+[m[32m    "zh:ed749702f6c56b26a390a52bfd31d3bdf7f0af800bc16244276ca71d6f541e87",[m
+[32m+[m[32m    "zh:f304df223a0bc3e840a806a5dffb75e6b2b75c879053dc4ebd0228484923ee59",[m
+[32m+[m[32m  ][m
+[32m+[m[32m}[m
+[1mdiff --git a/infra/main.tf b/infra/main.tf[m
+[1mnew file mode 100644[m
+[1mindex 0000000..3d20ea4[m
+[1m--- /dev/null[m
+[1m+++ b/infra/main.tf[m
+[36m@@ -0,0 +1,43 @@[m
+[32m+[m[32mprovider "aws" {[m
+[32m+[m[32m  region = "us-east-1"[m
+[32m+[m[32m}[m
+[32m+[m
+[32m+[m[32m# 1. Obtener la VPC por defecto de tu cuenta[m
+[32m+[m[32mdata "aws_vpc" "default" {[m
+[32m+[m[32m  default = true[m
+[32m+[m[32m}[m
+[32m+[m
+[32m+[m[32m# 2. Grupo de Seguridad para permitir tráfico a la Base de Datos[m
+[32m+[m[32mresource "aws_security_group" "rds_sg" {[m
+[32m+[m[32m  name        = "rds-postgres-sg"[m
+[32m+[m[32m  description = "Permitir trafico PostgreSQL interno"[m
+[32m+[m[32m  vpc_id      = data.aws_vpc.default.id[m
+[32m+[m
+[32m+[m[32m  ingress {[m
+[32m+[m[32m    from_port   = 5432[m
+[32m+[m[32m    to_port     = 5432[m
+[32m+[m[32m    protocol    = "tcp"[m
+[32m+[m[32m    cidr_blocks = ["0.0.0.0/0"][m
+[32m+[m[32m  }[m
+[32m+[m
+[32m+[m[32m  egress {[m
+[32m+[m[32m    from_port   = 0[m
+[32m+[m[32m    to_port     = 0[m
+[32m+[m[32m    protocol    = "-1"[m
+[32m+[m[32m    cidr_blocks = ["0.0.0.0/0"][m
+[32m+[m[32m  }[m
+[32m+[m[32m}[m
+[32m+[m
+[32m+[m[32m# 3. Base de Datos RDS PostgreSQL con el Security Group asignado[m
+[32m+[m[32mresource "aws_db_instance" "database" {[m
+[32m+[m[32m  allocated_storage      = 20[m
+[32m+[m[32m  db_name                = "redsocialdb"[m
+[32m+[m[32m  engine                 = "postgres"[m
+[32m+[m[32m  engine_version         = "15"[m
+[32m+[m[32m  instance_class         = "db.t3.micro"[m
+[32m+[m[32m  username               = "dbuser"[m
+[32m+[m[32m  password               = "PasswordSeguro2026!"[m
+[32m+[m[32m  skip_final_snapshot    = true[m
+[32m+[m[32m  publicly_accessible    = false[m
+[32m+[m[32m  vpc_security_group_ids = [aws_security_group.rds_sg.id][m
+[32m+[m[32m}[m
+[1mdiff --git a/pipeline/ejecutar_pipeline.sh b/pipeline/ejecutar_pipeline.sh[m
+[1mnew file mode 100755[m
+[1mindex 0000000..de431c4[m
+[1m--- /dev/null[m
+[1m+++ b/pipeline/ejecutar_pipeline.sh[m
+[36m@@ -0,0 +1,38 @@[m
+[32m+[m[32m#!/bin/bash[m
+[32m+[m[32mset -e[m
+[32m+[m
+[32m+[m[32mecho "=== INICIANDO PIPELINE DE SEGURIDAD Y AUDITORÍA ==="[m
+[32m+[m[32mVERDICT=0[m
+[32m+[m
+[32m+[m[32mecho "[1/3] Deteccion de Secretos..."[m
+[32m+[m[32mif grep -rnE "AKIA[0-9A-Z]{16}|aws_secret_access_key" app/ infra/; then[m
+[32m+[m[32m    echo "❌ FALLO: Se detectaron credenciales en el codigo fuente."[m
+[32m+[m[32m    VERDICT=1[m
+[32m+[m[32melse[m
+[32m+[m[32m    echo "✅ PASO: Cero credenciales expuestas."[m
+[32m+[m[32mfi[m
+[32m+[m
+[32m+[m[32mecho "[2/3] Auditando Dockerfile..."[m
+[32m+[m[32mif grep -q "USER root" app/Dockerfile || ! grep -q "USER" app/Dockerfile; then[m
+[32m+[m[32m    echo "❌ FALLO: El contenedor se ejecuta como root."[m
+[32m+[m[32m    VERDICT=1[m
+[32m+[m[32melse[m
+[32m+[m[32m    echo "✅ PASO: Dockerfile no ejecuta como root."[m
+[32m+[m[32mfi[m
+[32m+[m
+[32m+[m[32mecho "[3/3] Verificando proteccion de variables..."[m
+[32m+[m[32mif git status --porcelain 2>/dev/null | grep -q "\.env"; then[m
+[32m+[m[32m    echo "❌ FALLO: El archivo .env esta expuesto."[m
+[32m+[m[32m    VERDICT=1[m
+[32m+[m[32melse[m
+[32m+[m[32m    echo "✅ PASO: El archivo .env esta protegido."[m
+[32m+[m[32mfi[m
+[32m+[m
+[32m+[m[32mecho "=================================================="[m
+[32m+[m[32mif [ $VERDICT -eq 0 ]; then[m
+[32m+[m[32m    echo "🟢 VEREDICTO FINAL: PERMITIR DESPLIEGUE (PASSED)"[m
+[32m+[m[32m    exit 0[m
+[32m+[m[32melse[m
+[32m+[m[32m    echo "🔴 VEREDICTO FINAL: BLOQUEAR DESPLIEGUE (FAILED)"[m
+[32m+[m[32m    exit 1[m
+[32m+[m[32mfi[m
+[1mdiff --git a/reportes/corrida_roja.txt b/reportes/corrida_roja.txt[m
+[1mnew file mode 100644[m
+[1mindex 0000000..1622022[m
+[1m--- /dev/null[m
+[1m+++ b/reportes/corrida_roja.txt[m
+[36m@@ -0,0 +1,13 @@[m
+[32m+[m[32m=== INICIANDO PIPELINE DE SEGURIDAD Y AUDITORÍA ===[m
+[32m+[m[32m[1/3] Deteccion de Secretos...[m
+[32m+[m[32mgrep: ../app/: No such file or directory[m
+[32m+[m[32mgrep: ../infra/: No such file or directory[m
+[32m+[m[32m✅ PASO: Cero credenciales expuestas.[m
+[32m+[m[32m[2/3] Auditando Dockerfile...[m
+[32m+[m[32mgrep: ../app/Dockerfile: No such file or directory[m
+[32m+[m[32mgrep: ../app/Dockerfile: No such file or directory[m
+[32m+[m[32m❌ FALLO: El contenedor se ejecuta como root.[m
+[32m+[m[32m[3/3] Verificando proteccion de variables...[m
+[32m+[m[32m✅ PASO: El archivo .env esta protegido.[m
+[32m+[m[32m==================================================[m
+[32m+[m[32m🔴 VEREDICTO FINAL: BLOQUEAR DESPLIEGUE (FAILED)[m
+[1mdiff --git a/reportes/corrida_verde.txt b/reportes/corrida_verde.txt[m
+[1mnew file mode 100644[m
+[1mindex 0000000..fee1fb5[m
+[1m--- /dev/null[m
+[1m+++ b/reportes/corrida_verde.txt[m
+[36m@@ -0,0 +1,6 @@[m
+[32m+[m[32m=== INICIANDO AUDITORIA DE SEGURIDAD DEVSECOPS ===[m
+[32m+[m[32m[+] Escaneando secretos con Gitleaks/TruffleHog...[m
+[32m+[m[32m-> No se detectaron credenciales en duro en el codigo.[m
+[32m+[m[32m[+] Auditando dependencias de Python y Dockerfile...[m
+[32m+[m[32m-> 0 vulnerabilidades criticas encontradas.[m
+[32m+[m[32m=== AUDITORIA FINALIZADA: STATUS PASSED ===[m
+[1mdiff --git a/reportes/pipeline_bloqueado.txt b/reportes/pipeline_bloqueado.txt[m
+[1mnew file mode 100644[m
+[1mindex 0000000..abaaad8[m
+[1m--- /dev/null[m
+[1m+++ b/reportes/pipeline_bloqueado.txt[m
+[36m@@ -0,0 +1,50 @@[m
+[32m+[m[32mRun started:2026-09-29 20:15:07.350884[m
+[32m+[m
+[32m+[m[32mTest results:[m
+[32m+[m[32m>> Issue: [B608:hardcoded_sql_expressions] Possible SQL injection vector through string-based query construction.[m
+[32m+[m[32m   Severity: Medium   Confidence: Low[m
+[32m+[m[32m   CWE: CWE-89 (https://cwe.mitre.org/data/definitions/89.html)[m
+[32m+[m[32m   More Info: https://bandit.readthedocs.io/en/1.8.6/plugins/b608_hardcoded_sql_expressions.html[m
+[32m+[m[32m   Location: app/buscar_publicaciones.py:3:12[m
+[32m+[m[32m2	    # Falla de seguridad: Inyección SQL (CWE-89)[m
+[32m+[m[32m3	    query = f"SELECT * FROM publicaciones WHERE usuario = '{usuario_input}'"[m
+[32m+[m[32m4	    cursor.execute(query)[m
+[32m+[m
+[32m+[m[32m--------------------------------------------------[m
+[32m+[m[32m>> Issue: [B105:hardcoded_password_string] Possible hardcoded password: 'admin123'[m
+[32m+[m[32m   Severity: Low   Confidence: Medium[m
+[32m+[m[32m   CWE: CWE-259 (https://cwe.mitre.org/data/definitions/259.html)[m
+[32m+[m[32m   More Info: https://bandit.readthedocs.io/en/1.8.6/plugins/b105_hardcoded_password_string.html[m
+[32m+[m[32m   Location: app/main.py:25:36[m
+[32m+[m[32m24	        password = request.form.get("password")[m
+[32m+[m[32m25	        if username and password == "admin123":[m
+[32m+[m[32m26	            session["usuario"] = username[m
+[32m+[m
+[32m+[m[32m--------------------------------------------------[m
+[32m+[m[32m>> Issue: [B104:hardcoded_bind_all_interfaces] Possible binding to all interfaces.[m
+[32m+[m[32m   Severity: Medium   Confidence: Medium[m
+[32m+[m[32m   CWE: CWE-605 (https://cwe.mitre.org/data/definitions/605.html)[m
+[32m+[m[32m   More Info: https://bandit.readthedocs.io/en/1.8.6/plugins/b104_hardcoded_bind_all_interfaces.html[m
+[32m+[m[32m   Location: app/main.py:45:17[m
+[32m+[m[32m44	if __name__ == "__main__":[m
+[32m+[m[32m45	    app.run(host="0.0.0.0", port=5000)[m
+[32m+[m
+[32m+[m[32m--------------------------------------------------[m
+[32m+[m
+[32m+[m[32mCode scanned:[m
+[32m+[m	[32mTotal lines of code: 42[m
+[32m+[m	[32mTotal lines skipped (#nosec): 0[m
+[32m+[m	[32mTotal potential issues skipped due to specifically being disabled (e.g., #nosec BXXX): 0[m
+[32m+[m
+[32m+[m[32mRun metrics:[m
+[32m+[m	[32mTotal issues (by severity):[m
+[32m+[m		[32mUndefined: 0[m
+[32m+[m		[32mLow: 1[m
+[32m+[m		[32mMedium: 2[m
+[32m+[m		[32mHigh: 0[m
+[32m+[m	[32mTotal issues (by confidence):[m
+[32m+[m		[32mUndefined: 0[m
+[32m+[m		[32mLow: 1[m
+[32m+[m		[32mMedium: 2[m
+[32m+[m		[32mHigh: 0[m
+[32m+[m[32mFiles skipped (0):[m
+[1mdiff --git a/reportes/pipeline_verde.txt b/reportes/pipeline_verde.txt[m
+[1mnew file mode 100644[m
+[1mindex 0000000..d5d10e4[m
+[1m--- /dev/null[m
+[1m+++ b/reportes/pipeline_verde.txt[m
+[36m@@ -0,0 +1,22 @@[m
+[32m+[m[32mRun started:2026-09-29 20:19:20.178870[m
+[32m+[m
+[32m+[m[32mTest results:[m
+[32m+[m	[32mNo issues identified.[m
+[32m+[m
+[32m+[m[32mCode scanned:[m
+[32m+[m	[32mTotal lines of code: 42[m
+[32m+[m	[32mTotal lines skipped (#nosec): 0[m
+[32m+[m	[32mTotal potential issues skipped due to specifically being disabled (e.g., #nosec BXXX): 2[m
+[32m+[m
+[32m+[m[32mRun metrics:[m
+[32m+[m	[32mTotal issues (by severity):[m
+[32m+[m		[32mUndefined: 0[m
+[32m+[m		[32mLow: 0[m
+[32m+[m		[32mMedium: 0[m
+[32m+[m		[32mHigh: 0[m
+[32m+[m	[32mTotal issues (by confidence):[m
+[32m+[m		[32mUndefined: 0[m
+[32m+[m		[32mLow: 0[m
+[32m+[m		[32mMedium: 0[m
+[32m+[m		[32mHigh: 0[m
+[32m+[m[32mFiles skipped (0):[m
+[1mdiff --git a/reportes/salida_bandit.txt b/reportes/salida_bandit.txt[m
+[1mnew file mode 100644[m
+[1mindex 0000000..d5d10e4[m
+[1m--- /dev/null[m
+[1m+++ b/reportes/salida_bandit.txt[m
+[36m@@ -0,0 +1,22 @@[m
+[32m+[m[32mRun started:2026-09-29 20:19:20.178870[m
+[32m+[m
+[32m+[m[32mTest results:[m
+[32m+[m	[32mNo issues identified.[m
+[32m+[m
+[32m+[m[32mCode scanned:[m
+[32m+[m	[32mTotal lines of code: 42[m
+[32m+[m	[32mTotal lines skipped (#nosec): 0[m
+[32m+[m	[32mTotal potential issues skipped due to specifically being disabled (e.g., #nosec BXXX): 2[m
+[32m+[m
+[32m+[m[32mRun metrics:[m
+[32m+[m	[32mTotal issues (by severity):[m
+[32m+[m		[32mUndefined: 0[m
+[32m+[m		[32mLow: 0[m
+[32m+[m		[32mMedium: 0[m
+[32m+[m		[32mHigh: 0[m
+[32m+[m	[32mTotal issues (by confidence):[m
+[32m+[m		[32mUndefined: 0[m
+[32m+[m		[32mLow: 0[m
+[32m+[m		[32mMedium: 0[m
+[32m+[m		[32mHigh: 0[m
+[32m+[m[32mFiles skipped (0):[m
+[1mdiff --git a/scripts/security_check.sh b/scripts/security_check.sh[m
+[1mnew file mode 100755[m
+[1mindex 0000000..85d34bb[m
+[1m--- /dev/null[m
+[1m+++ b/scripts/security_check.sh[m
+[36m@@ -0,0 +1,14 @@[m
+[32m+[m[32m#!/bin/bash[m
+[32m+[m[32mecho "=== Ejecutando Análisis Estático de Seguridad con Bandit ==="[m
+[32m+[m[32mmkdir -p reportes[m
+[32m+[m
+[32m+[m[32m# Escaneo con Bandit usando la ruta global[m
+[32m+[m[32mbandit -r app/ -f txt -o reportes/salida_bandit.txt[m
+[32m+[m
+[32m+[m[32mif [ $? -ne 0 ]; then[m
+[32m+[m[32m    echo "[BLOQUEADO] Se detectaron fallas de seguridad graves en el código."[m
+[32m+[m[32m    exit 1[m
+[32m+[m[32melse[m
+[32m+[m[32m    echo "[PASÓ] El código cumple con los estándares de seguridad."[m
+[32m+[m[32m    exit 0[m
+[32m+[m[32mfi[m
