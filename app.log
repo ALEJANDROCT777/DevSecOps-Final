@@ -4,24 +4,5 @@ nohup: ignoring input
 WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
  * Running on all addresses (0.0.0.0)
  * Running on http://127.0.0.1:8000
- * Running on http://172.31.75.22:8000
+ * Running on http://172.31.19.225:8000
 Press CTRL+C to quit
-127.0.0.1 - - [29/Sep/2026 20:34:34] "HEAD / HTTP/1.1" 302 -
-187.209.156.121 - - [29/Sep/2026 20:35:58] "GET / HTTP/1.1" 302 -
-187.209.156.121 - - [29/Sep/2026 20:35:58] "GET /login HTTP/1.1" 200 -
-187.209.156.121 - - [29/Sep/2026 20:35:59] "GET /favicon.ico HTTP/1.1" 404 -
-187.209.156.121 - - [29/Sep/2026 20:36:19] "POST /login HTTP/1.1" 200 -
-187.209.156.121 - - [29/Sep/2026 20:36:29] "POST /login HTTP/1.1" 302 -
-187.209.156.121 - - [29/Sep/2026 20:36:29] "GET / HTTP/1.1" 200 -
-187.209.156.121 - - [29/Sep/2026 20:36:36] "GET /buscar?usuario=sad HTTP/1.1" 200 -
-187.209.156.121 - - [29/Sep/2026 20:36:41] "GET /buscar?usuario=como+estas HTTP/1.1" 200 -
-187.209.156.121 - - [29/Sep/2026 20:36:44] "GET / HTTP/1.1" 200 -
-187.209.156.121 - - [29/Sep/2026 20:37:00] "GET /buscar?usuario=pipeline HTTP/1.1" 200 -
-187.209.156.121 - - [29/Sep/2026 20:37:04] "GET /buscar?usuario=mau HTTP/1.1" 200 -
-187.209.156.121 - - [29/Sep/2026 20:37:10] "GET /buscar?usuario=torres HTTP/1.1" 200 -
-187.209.156.121 - - [29/Sep/2026 20:37:14] "GET /buscar?usuario=alex HTTP/1.1" 200 -
-187.209.156.121 - - [29/Sep/2026 20:37:41] "GET / HTTP/1.1" 200 -
-187.209.156.121 - - [29/Sep/2026 20:39:05] "GET / HTTP/1.1" 200 -
-187.209.156.121 - - [29/Sep/2026 20:39:13] "GET /logout HTTP/1.1" 302 -
-187.209.156.121 - - [29/Sep/2026 20:39:13] "GET /login HTTP/1.1" 200 -
-187.209.156.121 - - [29/Sep/2026 20:39:17] "POST /login HTTP/1.1" 200 -
